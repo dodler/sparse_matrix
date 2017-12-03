@@ -43,6 +43,8 @@ public class SparseMatrix{
 
     public SparseMatrix mul(SparseMatrix second) {
 
+        assert cols == second.rowsNum;
+
         SparseMatrix result = new SparseMatrix(rows.length, second.rows[0].size);
 
         for (int i = 0; i < this.rows.length; i++) {
@@ -63,6 +65,11 @@ public class SparseMatrix{
 
     @Override
     public boolean equals(Object obj){
+
+        if (obj == null) {
+            return false;
+        }
+
         if (!(obj instanceof SparseMatrix)) {
             return false;
         }
@@ -85,6 +92,11 @@ public class SparseMatrix{
             for (int j = 0; j < rows[i].size; j++) {
                 Integer src = getValueAt(i, j);
                 Integer dst = mat.getValueAt(i, j);
+
+                if (src == null || dst == null) {
+                    continue;
+                }
+
                 if (!src.equals(dst)) {
                     return false;
                 }
@@ -105,7 +117,7 @@ public class SparseMatrix{
 
     private int i = 0,j = 0;
 
-    public void addFromStream(int value) {
+    void addFromStream(int value) {
         setValueAt(i, j, value);
         if (j == cols-1) {
             i++;

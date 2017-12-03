@@ -1,6 +1,7 @@
-import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -11,7 +12,6 @@ public class SparseVector {
     Map<Integer, Integer> values;
 
     int size;
-    private List<Integer> streamValues;
 
     public SparseVector() {
         values = new HashMap<>();
@@ -31,11 +31,6 @@ public class SparseVector {
         }
     }
 
-    public int nonZero(){
-        return values.size();
-
-    }
-
     public Integer get(int col) {
         if (values.containsKey(col)) {
             return values.get(col);
@@ -46,7 +41,7 @@ public class SparseVector {
 
 
     public Stream<Integer> stream() {
-        streamValues = new ArrayList<>();
+        List<Integer> streamValues = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {
             streamValues.add(get(i));
@@ -54,7 +49,4 @@ public class SparseVector {
         return streamValues.stream();
     }
 
-    public boolean contains(int k) {
-        return values.containsKey(k);
-    }
 }

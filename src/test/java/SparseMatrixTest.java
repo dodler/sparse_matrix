@@ -1,4 +1,5 @@
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.stream.Stream;
 
 import static java.lang.Math.abs;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -20,15 +22,45 @@ public class SparseMatrixTest {
     public static final SparseMatrix TEST_B = new SparseMatrix(3, 2);
     public static final SparseMatrix TEST_C = new SparseMatrix(4, 2);
 
+    public static final SparseMatrix TEST_SQUAD = new SparseMatrix(3, 3);
+
+    @Test
+    public void testSparseMatrixSupportToStream(){
+        Stream<Integer> integerStream = SPARSE_MATRIX_SUPPORT.toStream(TEST_A);
+        assertNotNull(integerStream);
+    }
+
+    @Test
+    public void testFromStream() {
+        SparseMatrix sparseMatrix = SPARSE_MATRIX_SUPPORT.fromStream(TEST_A.stream());
+        assertNotNull(sparseMatrix);
+        assertEquals(sparseMatrix, TEST_A);
+    }
+
     @Test
     public void mul() throws Exception {
         SparseMatrix sparseMatrix = new SparseMatrix(4, 3);
         SparseMatrix sparseMatrix1 = new SparseMatrix(3, 1);
         SparseMatrix mul = sparseMatrix.mul(sparseMatrix1);
+
+        assertNotNull(mul);
+    }
+
+    @Test
+    public void mulBadDim(){
+        try {
+            SparseMatrix mul = new SparseMatrix(4, 2).mul(new SparseMatrix(3, 1));
+        }catch(AssertionError error){
+            System.out.println("Exception should be caught");
+        }
     }
 
     @Before
     public void before(){
+
+        TEST_SQUAD.setValueAt(0, 1, 34);
+        TEST_SQUAD.setValueAt(1, 2, 8);
+
         TEST_A.setValueAt(0,0,2);
         TEST_A.setValueAt(0,1,3);
         TEST_A.setValueAt(0,2,4);
@@ -96,6 +128,7 @@ public class SparseMatrixTest {
         System.out.println(collect);
         System.out.println(collect1);
 
+        assertNotNull(mul);
         assertTrue(mul.equals(TEST_C));
     }
 
@@ -130,6 +163,7 @@ public class SparseMatrixTest {
     }
 
     @Test
+    @Ignore
     public void test1x07_1x07(){
         SparseMatrix a = getRandomSparse(1_000_000, 1_000_000);
         SparseMatrix b = getRandomSparse(1_000_000, 1_000_000);
@@ -141,7 +175,21 @@ public class SparseMatrixTest {
     }
 
     @Test
+    @Ignore
+    public void test1x08_1x08(){
+        SparseMatrix a = getRandomSparse(10_000_000, 10_000_000);
+        SparseMatrix b = getRandomSparse(10_000_000, 10_000_000);
+
+        System.out.println("generation done");
+
+        double v = avgTime(() -> a.mul(b));
+
+        System.out.println("time:" + v);
+    }
+
+    @Test
     public void testStream(){
+
         SparseMatrixCollector collector = new SparseMatrixCollector(TEST_A.getRows(), TEST_A.getCols());
 
         Stream<Integer> stream = TEST_A.stream();
@@ -155,7 +203,15 @@ public class SparseMatrixTest {
         System.out.println("got:" + collect1);
         System.out.println("should be:" + collect2);
 
+        assertNotNull(collect);
         assertTrue(collect.equals(TEST_A));
+    }
+
+    @Test
+    public void testImplCollect(){
+        SparseMatrix sparseMatrix = SPARSE_MATRIX_SUPPORT.fromStream(TEST_SQUAD.stream());
+
+        assertEquals(sparseMatrix, TEST_SQUAD);
     }
 
     @Test
@@ -165,7 +221,7 @@ public class SparseMatrixTest {
         collect.forEach(System.out::println);
     }
 
-    public static final double SPARSE_FACTOR = 0.001;
+    public static final double SPARSE_FACTOR = 0.0001;
     public static final int ITERS = 1;
     public static final int MAX_VAL = 20;
 
