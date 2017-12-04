@@ -33,6 +33,10 @@ public class SparseMatrixTest {
     @Test
     public void testFromStream() {
         SparseMatrix sparseMatrix = SPARSE_MATRIX_SUPPORT.fromStream(TEST_A.stream());
+
+        System.out.println(printMatrix(TEST_A.stream()));
+        System.out.println(printMatrix(sparseMatrix.stream()));
+
         assertNotNull(sparseMatrix);
         assertEquals(sparseMatrix, TEST_A);
     }
@@ -122,14 +126,18 @@ public class SparseMatrixTest {
         Stream<Integer> integerStream = SPARSE_MATRIX_SUPPORT.toStream(mul);
 
 
-        String collect = integerStream.map(e -> e.toString()).collect(Collectors.joining(" "));
-        String collect1 = TEST_C.stream().map(e -> e.toString()).collect(Collectors.joining(" "));
+        String collect = printMatrix(integerStream);
+        String collect1 = printMatrix(TEST_C.stream());
 
         System.out.println(collect);
         System.out.println(collect1);
 
         assertNotNull(mul);
         assertTrue(mul.equals(TEST_C));
+    }
+
+    private String printMatrix(Stream<Integer> integerStream) {
+        return integerStream.map(e -> e.toString()).collect(Collectors.joining(" "));
     }
 
     @Test
@@ -185,26 +193,6 @@ public class SparseMatrixTest {
         double v = avgTime(() -> a.mul(b));
 
         System.out.println("time:" + v);
-    }
-
-    @Test
-    public void testStream(){
-
-        SparseMatrixCollector collector = new SparseMatrixCollector(TEST_A.getRows(), TEST_A.getCols());
-
-        Stream<Integer> stream = TEST_A.stream();
-
-        SparseMatrix collect = stream.collect(collector);
-
-        String collect1 = collect.stream().map(e -> e.toString()).collect(Collectors.joining(" "));
-        String collect2 = TEST_A.stream().map(e -> e.toString()).collect(Collectors.joining(" "));
-
-
-        System.out.println("got:" + collect1);
-        System.out.println("should be:" + collect2);
-
-        assertNotNull(collect);
-        assertTrue(collect.equals(TEST_A));
     }
 
     @Test

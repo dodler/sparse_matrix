@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -106,7 +107,7 @@ public class SparseMatrix{
     }
 
     public Stream<Integer> stream() {
-        Stream<Integer> result = Stream.empty();
+        Stream<Integer> result = Stream.of( rowsNum, rows[0].size);
 
         for (SparseVector row : rows) {
             result = Stream.concat(result, row.stream());
